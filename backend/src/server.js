@@ -15,9 +15,8 @@ const app = express()
 const __dirname = path.resolve();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: ENV.CLIENT_URL,credentials: true}));
 app.use(clerkMiddleware())
-// app.use(cors({origin: ENV.CLIENT_URL,credentials: true}));
 
 app.use("/api/inngest",serve({client:inngest , functions}))
 app.use("/api/chat", chatRoutes);

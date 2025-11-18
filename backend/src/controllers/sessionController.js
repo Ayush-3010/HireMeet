@@ -8,15 +8,15 @@ export async function createSession(req,res){
         const clerkId = req.user.clerkId
         if(!problem || !difficulty) return res.status(400).json({msg: "Problem and Difficulty are required"})
         const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`
-        const session = await Session({
+        const session = await Session.create({
             problem,
             difficulty,
             host: userId,
             callId
         })
-        await streamClient.video.call("default",callId),getOrCreate({
+        await streamClient.video.call("default",callId).getOrCreate({
             data: {
-                created_by_client: clerkId,
+                created_by_id: clerkId,
                 custom: {
                     problem,
                     difficulty,
@@ -60,7 +60,7 @@ export async function endSession(req,res){
         const call = streamClient.video.call("default",session.callId)
         await call.delete({hard: true})
 
-        const channel = chatClient.channel("messaging",callId)
+        const channel = chatClient.channel("messaging",session.callId)
         await channel.delete()
 
         session.status = "completed"
@@ -145,13 +145,13 @@ export async function joinSession(req,res){
             return res.status(400).json({msg: "Host cannot join their own session as participant"})
         }
 
-        if(session.participant) res.status(409).json({msg: "Session is full"})
+        if(session.participant) return res.status(409).json({msg: "Session is full"})
         
         session.participant = userId
         await session.save()
 
         const channel = chatClient.channel("messaging",session.callId)
-        await channel.addMembers({clerkId})
+        await channel.addMembers([clerkId])
 
         res.status(200).json({session})
     } catch (error) {
