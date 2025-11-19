@@ -15,35 +15,7 @@ const app = express()
 const __dirname = path.resolve();
 
 app.use(express.json());
-const normalize = (s) => (s || '').toString().trim().replace(/\/+$/, '');
-
-const allowedOrigins = (
-  (process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL || '')
-    .split(',')
-    .map(normalize)
-    .filter(Boolean)
-);
-
-const corsOptions = {
-  origin: (requestOrigin, callback) => {
-    if (!requestOrigin) return callback(null, true);
-
-    const normalizedRequestOrigin = normalize(requestOrigin);
-    if (allowedOrigins.includes('*')) return callback(null, true);
-
-    if (allowedOrigins.includes(normalizedRequestOrigin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error(`CORS blocked for origin: ${requestOrigin}`), false);
-  },
-  credentials: true,
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization']
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.use(cors({origin: ENV.CLIENT_URL,credentials: true}));
 app.use(clerkMiddleware())
 
 app.use("/api/inngest",serve({client:inngest , functions}))
