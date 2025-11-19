@@ -23,7 +23,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
 
 
-app.get("/video-calls", protectRoute, (req,res)=>{
+app.get("/video-calls", (req,res)=>{
     res.status(200).json({
         msg: "Video call endpoints"
     })
