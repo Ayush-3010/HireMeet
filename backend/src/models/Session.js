@@ -12,12 +12,12 @@ const sessionSchema = new mongoose.Schema({
     },
     host: {
         type: mongoose.Schema.Types.ObjectId,
-        req: "User",
+        ref: "User",
         required: true
     },
     participant: {
         type: mongoose.Schema.Types.ObjectId,
-        req: "User",
+        ref: "User",
         default: null
     },
     status: {
