@@ -15,7 +15,7 @@ const app = express()
 const __dirname = path.resolve();
 
 app.use(express.json());
-app.use(cors({origin: ENV.CLIENT_URL,credentials: true}));
+app.use(cors());
 app.use(clerkMiddleware())
 
 app.use("/api/inngest",serve({client:inngest , functions}))
