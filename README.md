@@ -115,12 +115,12 @@ HireMeet/
 ## 🚀 Deployment
 
 Deploy using:
-- Vercel (frontend)
-- Render / Railway / DigitalOcean (backend)
+- Sevalla
 
 Build:
 ```bash
 npm run build
+npm run start
 ```
 
 ---
